@@ -23,4 +23,6 @@ func CreatePeople(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Data for User:%s with UserId:%s received.",p.ID, p.Firstname)
 	fmt.Println("Sending data to elastic search server")
 	elastic.PushToElasticSearch(p)
+
+
 }
