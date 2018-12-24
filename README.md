@@ -26,3 +26,4 @@ This Go lang project provides rest api endpoints for the URL `localhost:8000/peo
 
 5. /messaging/*.go : this folder should contain the file that handles the request/response to ibmmq, rabbitmq or any other messaging application.
 6. /property.env :  a property file that can be used to configure the server hostname, server portnumber, datastore server  hostname/portnumber etc.
+7. /nodeJS/*.go : a module that runs on the rabbitmq/ibmmq listeners and waits for the new notification. Once recieved it deletes the data from the datastore.
