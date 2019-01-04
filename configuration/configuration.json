@@ -1,0 +1,14 @@
+{
+    "ElasticProperties" : {
+        "Host" : "localhost",
+        "Port" :  9200,
+        "IndexName" : "people"
+    },
+    "RabbitmqProperties" : {
+        "Host" : "9.199.147.126",
+        "Port" : 5672,
+        "QueueName" : "rabbitmqueue",
+        "UserName" : "admin",
+        "Password" : "admin"
+    }
+}

@@ -4,6 +4,7 @@ import (
 	"log"
 	"fmt"
 	"github.com/streadway/amqp"
+	"github/parasmamgain/rest-api/configuration"
 )
 
 func failOnError(err error, msg string) {
@@ -12,8 +13,19 @@ func failOnError(err error, msg string) {
 	}
 }
 
+/* This method sends a message to rabbit mq queue containing the person id as a data in body*/
 func SendMessageToQueue(message string) {
-	conn, err := amqp.Dial("amqp://admin:admin@9.199.147.126:5672/")
+	properties, err := configuration.LoadConfigurationProperties()
+	rabbitMqHost := string(properties.RabbitmqProperties.Host)
+	rabbitMqPort := properties.RabbitmqProperties.Port
+	username := string(properties.RabbitmqProperties.UserName)
+	password := string(properties.RabbitmqProperties.Password)
+	queueName := string(properties.RabbitmqProperties.QueueName)
+	url := fmt.Sprintf("amqp://%s:%s@%s:%d",username, password, rabbitMqHost, rabbitMqPort)
+
+	fmt.Printf("Rabbitmq url is : %s /n",url)
+
+	conn, err := amqp.Dial(url)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -22,7 +34,7 @@ func SendMessageToQueue(message string) {
 	defer ch.Close()
 	
 	q, err := ch.QueueDeclare(
-		"rabbitQueue", // name
+		queueName, // name
 		false,   // durable
 		false,   // delete when unused
 		false,   // exclusive
@@ -45,9 +57,21 @@ func SendMessageToQueue(message string) {
 	failOnError(err, "Failed to publish a message")
 }
 
+/* This method fetches a message from rabbit mq queue*/
 func ReceivingMessageToQueue() (id string){
 	fmt.Println("Retriving message from rabbit MQ")
-	conn, err := amqp.Dial("amqp://admin:admin@9.199.147.126:5672/")
+	properties, err := configuration.LoadConfigurationProperties()
+	rabbitMqHost := string(properties.RabbitmqProperties.Host)
+	rabbitMqPort := properties.RabbitmqProperties.Port
+	username := string(properties.RabbitmqProperties.UserName)
+	password := string(properties.RabbitmqProperties.Password)
+	queueName := string(properties.RabbitmqProperties.QueueName)
+	url := fmt.Sprintf("amqp://%s:%s@%s:%d",username, password, rabbitMqHost, rabbitMqPort)
+
+	fmt.Printf("Rabbitmq url is : %s /n",url)
+
+
+	conn, err := amqp.Dial(url)
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -56,7 +80,7 @@ func ReceivingMessageToQueue() (id string){
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
-		"rabbitQueue", // name
+		queueName, // name
 		false,   // durable
 		false,   // delete when unused
 		false,   // exclusive

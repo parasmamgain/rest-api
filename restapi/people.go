@@ -10,8 +10,7 @@ import (
 )
 
 func GetPeople(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Method invoked in Get People")
-
+	fmt.Println("Method invoked in Get People...")
 	// getting unique Id from the rabbit-mq
 	id := messaging.ReceivingMessageToQueue()
 
