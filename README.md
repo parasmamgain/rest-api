@@ -18,7 +18,7 @@ This application provides two endpoints
 1. GET
 2. POST
 
-1. GET : `localhost:8081/id` : retreives the information of the person with id sent with the url from the MongoDB Database. This information is then shared in the response body.
+1. GET : `localhost:8081/{id}` : retreives the information of the person with id sent with the url from the MongoDB Database. This information is then shared in the response body.
 
    -  This request is being served by the Node Js module  
 
@@ -39,9 +39,9 @@ This application provides two endpoints
 
 ## Functionality of the GET-POST Requests
 
-Once a POST request is being made with above obdy it pushes this data into the elastic search and at the same time send the `id` to the rabbitmq queue. This queue holds the id's of all the persons for which the POST request has been made. 
+Once a POST request is being made with above obdy it pushes this data into the elastic search and at the same time send the `{id}` to the rabbitmq queue. This queue holds the id's of all the persons for which the POST request has been made. 
 
-when a GET request is being made using a URL `localhost:8081/id` then it retrieves the person details belonging to `id` from the mongo returns it as a response.
+when a GET request is being made using a URL `localhost:8081/{id}` then it retrieves the person details belonging to `{id}` from the mongo returns it as a response.
 
 1. /main.go - this is the initial point to start the application. `go run main.go`
 2. /models/people.go - this file contains the entity object/structure of the person object.
@@ -66,7 +66,7 @@ when a GET request is being made using a URL `localhost:8081/id` then it retriev
 3.	The Golang service then uses a messaging queue ( rabbit mq) to inform a Node service that there is new data in Elastic Search Index.
 4.	The Node service takes the data-body from Elastic Search Index and writes it to a SQL / NoSQL database (Used MongoDB for the demo).
 5.	Once that is done, the Node service deletes the data-body from Elastic Search Index.
-6.	Write a GET endpoint( i.e. `localhost:8081/id`) in Node which fetches data from your Mongo DB database and serves it as a JSON response
+6.	Write a GET endpoint( i.e. `localhost:8081/{id}`) in Node which fetches data from your Mongo DB database and serves it as a JSON response
 7.	Deploy it on a server and send us the following:
 	- a.	Link to your Git project
 	- b.	POST and GET endpoints with details of the data to be posted
