@@ -25,6 +25,18 @@ type Rabbitmq struct {
 	Password	  string
 }
 
+type NodeJs struct {
+	Host          string
+	Port          int
+}
+
+type MongoDb struct {
+	Host		   string
+	Port		   int
+	DbName		   string
+	CollectionName string
+}
+
 func LoadConfigurationProperties() (configurationProperties Configuration, err error) {
 	var configProperties Configuration
 	//filename is the path to the json config file

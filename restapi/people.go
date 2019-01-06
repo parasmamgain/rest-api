@@ -19,7 +19,6 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 	p := elastic.PullFromElasticSearch(id)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(p)
-
 }
 
 func CreatePeople(w http.ResponseWriter, r *http.Request) {

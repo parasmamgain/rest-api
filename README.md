@@ -48,3 +48,9 @@ when a GET request is being made using a URL `localhost:8000/people` then it ret
 
 
 
+#starting application
+
+You will have to start the application by opening three terminals. lets name them `terminal 1`, `terminal 2` and `terminal 3`. 
+1. In `Terminal 1` go to directory `/rest-api` and run command `go run main.go` . This commands starts the go modules.
+2. In `Terminal 2` go to directory `/rest-api/nodejs` and run command `node server.js` . This command starts the nodeJs modules available.
+3. In `Terminal 3` go to directory `/rest-api/nodejs` and run command `./receive.js`. This command starts the receives.js that continously listens on rabbitmq queue and expects a id to be pushed in the queue.

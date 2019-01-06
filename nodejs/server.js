@@ -1,16 +1,27 @@
 var express = require('express');
 var app = express();
 var fs = require("fs");
+let rawdata = fs.readFileSync('../configuration/configuration.json'); 
+let configProp = JSON.parse(rawdata);
+console.log("configuration properties loaded :" + JSON.stringify(configProp))
+
 
 // Mongo db declarations
 var mongo = require("mongodb")
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://9.199.147.126/"
+var mongoHost = configProp.MongoProperties.Host;
+var mongoPort = configProp.MongoProperties.Port;
+var mongoDbName = configProp.MongoProperties.DbName;
+var mongoCollectionName = configProp.MongoProperties.CollectionName;
+var url = "mongodb://"+ mongoHost +"/"
 
 // ElasticSearch declarations
 var elasticsearch = require('elasticsearch');
+var elasticHost = configProp.ElasticProperties.Host;
+var elasticPort = configProp.ElasticProperties.Port;
+var elasticIndex = configProp.ElasticProperties.IndexName;
 var client = new elasticsearch.Client({
-    hosts: [ 'http://localhost:9200']
+    hosts: [ 'http://' + elasticHost + ':' + elasticPort ]
  });
 
 var server = app.listen(8081, function () {
@@ -33,10 +44,10 @@ app.get('/', function (req, res) {
     // function to fetch the person details from the mongo Db
     var data = MongoClient.connect(url, function(err, db) {
         if (err) throw err;
-        var dbo = db.db("mydb");
+        var dbo = db.db(mongoDbName);
         var query = { id: peopleId };
         //Find the first document in the customers collection:
-        dbo.collection("people").find(query).toArray(function(err, result) {
+        dbo.collection(mongoCollectionName).find(query).toArray(function(err, result) {
           if (err) throw err;
           console.log(result);
           res.end(JSON.stringify(result));
@@ -55,7 +66,7 @@ app.post('/:id', function (req, res) {
     // function to retreive the person details from the elastic search index
     // ---------------------------------------------------------------------
     client.search({
-        index: 'people',
+        index: elasticIndex,
         q: 'id:'+personId
     }).then(function(resp) {
         console.log("--- Hits ---");
@@ -72,9 +83,9 @@ app.post('/:id', function (req, res) {
     MongoClient.connect(url, function(err, db) {
         console.log("now inserting record into mongoDB")
         if (err) throw err;
-        var dbo = db.db("mydb");        
+        var dbo = db.db(mongoDbName);        
         var myobj = { id: person.id, firstname : person.firstname ,lastname : person.lastname , address: { city : person.address.city , state : person.address.state} };
-        dbo.collection("people").insertOne(myobj, function(err, res) {
+        dbo.collection(mongoCollectionName).insertOne(myobj, function(err, res) {
           if (err) throw err;
           console.log("1 document inserted");
           db.close();
@@ -84,7 +95,7 @@ app.post('/:id', function (req, res) {
       // function to delete the person details from the elastic search index
       // ---------------------------------------------------------------------
       client.deleteByQuery({
-        index: 'people',        
+        index: elasticIndex,        
         body: {
            query: {
                match: { id : personId }
